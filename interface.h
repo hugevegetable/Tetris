@@ -4,14 +4,18 @@
 #include "time.h"
 #include <stdio.h>
 
-#include <Windows.h>  //Unicode×Ö·û´®ĞèÒªÓÃµ½
-#include <conio.h> //_getch»ñÈ¡ÓÃ»§ÊäÈëĞèÒªÓÃµ½
-#pragma comment (lib,"winmm.lib")//²¥·ÅÒôÀÖº¯ÊıĞèÒªÓÃµ½
+#include <Windows.h>	//Unicodeå­—ç¬¦ä¸²éœ€è¦ç”¨åˆ°
+#include <conio.h>		//_getchè·å–ç”¨æˆ·è¾“å…¥éœ€è¦ç”¨åˆ°
+
+#pragma comment (lib,"winmm.lib")//æ’­æ”¾éŸ³ä¹å‡½æ•°éœ€è¦ç”¨åˆ°
 
 
 
-#define GameFrame_Width 20
-#define GameFrame_Height 20
+//#define GameFrame_Width 20
+//#define GameFrame_Height 20						//æ”¹å˜æ¡†æ¶å¤§å°
+
+#define GameFrame_Width 18					//å®½åº¦å¿…é¡»æ˜¯å¶æ•°
+#define GameFrame_Height 20					//æ”¹å˜æ¡†æ¶å¤§å°
 
 #define GameFrame_X 4
 #define GameFrame_Y 3
@@ -28,5 +32,6 @@ void close_music();
 void regulation();
 void setting();
 void gamePlay();
+
 
 
