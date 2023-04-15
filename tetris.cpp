@@ -4,9 +4,10 @@
 int map[100][100];
 
 int i, j;
-//¶íÂŞË¹·½¿éĞÎ×´
+int list_number=0;
+//ä¿„ç½—æ–¯æ–¹å—å½¢çŠ¶
 int block[BLOCK_COUNT * 4][BLOCK_WIDTH][BLOCK_HEIGHT] = {
-    // | ĞÎ·½¿é
+    // | å½¢æ–¹å—
     { 0,0,0,0,0,
       0,0,1,0,0,
       0,0,1,0,0,
@@ -15,37 +16,67 @@ int block[BLOCK_COUNT * 4][BLOCK_WIDTH][BLOCK_HEIGHT] = {
     { 0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0 },
     { 0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0 },
     { 0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0 },
-    // L ĞÎ·½¿é
+    // L å½¢æ–¹å—
    { 0,0,0,0,0,
      0,0,1,0,0,
      0,0,1,0,0,
      0,0,1,1,0,
      0,0,0,0,0 },
-   { 0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0 },
-   { 0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0 },
-   { 0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0 },
-   // Ìï ĞÎ·½¿é
+   { 0,0,0,0,0,
+   0,0,0,1,0,
+   0,1,1,1,0,
+   0,0,0,0,0,
+   0,0,0,0,0 },
+   { 0,0,0,0,0,
+     0,1,1,0,0,
+     0,0,1,0,0,
+     0,0,1,0,0,
+     0,0,0,0,0 },
+   { 0,0,0,0,0,
+   0,0,0,0,0,
+   0,1,1,1,0,
+   0,1,0,0,0,
+   0,0,0,0,0 },
+   // ç”° å½¢æ–¹å—
    { 0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
    { 0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
    { 0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
    { 0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
-   // T ĞÎ·½¿é
+   // T å½¢æ–¹å—
    { 0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0 },
    { 0,0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0 },
    { 0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0 },
    { 0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0 },
-   // Z ĞÎ·½¿é
-   { 0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0 },
-   { 0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0 },
-   { 0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0 },
-   { 0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0 },
+   // Z å½¢æ–¹å—
+ { 0,0,0,0,0,
+   0,1,1,0,0,
+   0,0,1,1,0,
+   0,0,0,0,0,
+   0,0,0,0,0 },
+   { 0,0,0,0,0,
+   0,0,1,0,0,
+   0,1,1,0,0,
+   0,1,0,0,0,
+   0,0,0,0,0 },
+ { 0,0,0,0,0,
+   0,0,1,1,0,
+   0,1,1,0,0,
+   0,0,0,0,0,
+   0,0,0,0,0 },
+   { 0,0,0,0,0,
+   0,1,0,0,0,
+   0,1,1,0,0,
+   0,0,1,0,0,
+   0,0,0,0,0 },
 };
 int score=0;
 int nextshape=-1;
+int isguide = -1;
 
 /********************************
  
 *********************************/
+
 
 void init()
 {
@@ -66,7 +97,8 @@ Tetris* CreateTetris()
 {
     Tetris* tetris = (Tetris*)malloc(sizeof(Tetris));
     setTetris(tetris,0,0,0,0);
-    
+    tetris->isguide = -1;
+    tetris->isauto = -1;
     return tetris;
 }
 
@@ -90,12 +122,40 @@ void PrintTetris(struct Tetris* tetris)
             case 4:color(13); break;
             }
             if(block[4*shape+dir][j][i])                  
-                printf("¡ö");
+                printf("â– ");
 
         }
             
     }
+    color(15);
         
+}
+
+void PrintHollowTetris(Tetris* tetris)
+{
+    int x = tetris->x;
+    int y = tetris->y;
+    int shape = tetris->shape;
+    int dir = tetris->shape_dir;
+
+    for (j = 0; j < BLOCK_HEIGHT; j++) {
+
+        for (i = 0; i < BLOCK_WIDTH; i++) {
+            gotoXY(x - 4 + 2 * i, y - 2 + j);
+            switch (shape) {
+            case 0:color(14); break;
+            case 1:color(9); break;
+            case 2:color(7); break;
+            case 3:color(11); break;
+            case 4:color(13); break;
+            }
+            if (block[4 * shape + dir][j][i])
+                printf("â–¡");
+
+        }
+
+    }
+    color(15);
 }
 
 void CleanTetris(struct Tetris* tetris)
@@ -119,48 +179,50 @@ void CleanTetris(struct Tetris* tetris)
 
 void initwall()
 {
-    for (i = 2; i < 2 * GameFrame_Width - 2; i += 2) {     
+    for (i = 2; i <= 2 * GameFrame_Width - 2; i += 2) {     
         map[GameFrame_X + i][GameFrame_Y + GameFrame_Height] = 2;
     }
 
-    for (i = 1; i < GameFrame_Height; i++) {
+    for (i = 1; i <= GameFrame_Height; i++) {
         
         map[GameFrame_X][GameFrame_Y + i] = 2;
     }
 
-    for (i = 1; i < GameFrame_Height; i++) {
+    for (i = 1; i <= GameFrame_Width; i++) {
         
         map[GameFrame_X + 2 * GameFrame_Width - 2][GameFrame_Y + i] = 2;
     }
+    map[GameFrame_X + 2 * GameFrame_Width - 2][GameFrame_Y + GameFrame_Width+1] = 2;
 }
 
 Tetris* KeyBored(Tetris* tetris)
 {   
     int temp = tetris->x;
-    char ch;//½ÓÊÕ¼üÅÌ°´¼ü
+    int shape_index = tetris->shape_dir;
+    char ch;//æ¥æ”¶é”®ç›˜æŒ‰é”®
     
     if (_kbhit()) {
         ch = _getch();
         //printf("%d",ch);
         
-        if (ch == KEY_LEFT)		//°´ ¡û¼ü
+        if (ch == KEY_LEFT)		//æŒ‰ â†é”®
         {
-            tetris->flag = true;
+            
             tetris->x -= 2;
         }
-        if (ch == KEY_RIGHT)    //°´ ¡ú¼ü
+        if (ch == KEY_RIGHT)    //æŒ‰ â†’é”®
         {
-            tetris->flag = true,
+            
             tetris->x += 2;
         }
-        if (ch == KEY_UP)       //°´ ¡ü¼ü 
+        if (ch == KEY_UP)       //æŒ‰ â†‘é”® 
         {
-            tetris->flag = true;
+            
             tetris->shape_dir = (tetris->shape_dir + 1) % 4;
         }
-        if (ch == KEY_DOWN)     //°´ ¡ı¼ü
+        if (ch == KEY_DOWN)     //æŒ‰ â†“é”®
         {   
-            tetris->flag = false;
+            
             while (1) {
                 tetris->y++;
                 if (ifMove(tetris) == 0) {
@@ -169,37 +231,90 @@ Tetris* KeyBored(Tetris* tetris)
             }
             tetris->y--;            
         }       
+        
         if (ch == KEY_SPACE) {
+            //PrintTetris(tetris);
+            //while (1) {
+            //    if (_kbhit())            //å†æŒ‰ç©ºæ ¼é”®ï¼Œç»§ç»­æ¸¸æˆ
+            //    {
+            //        ch = _getch();
+            //        if (ch == KEY_SPACE) {
+            //            CleanTetris(tetris);
+            //            break;
+            //        }
+            //    }
+            //}
             PrintTetris(tetris);
-            while (1) {
-                if (_kbhit())            //ÔÙ°´¿Õ¸ñ¼ü£¬¼ÌĞøÓÎÏ·
-                {
-                    ch = _getch();
-                    if (ch == KEY_SPACE) {
-                        CleanTetris(tetris);
-                        break;
-                    }
-                }
-            }
+            system("pause>nul");
+
         }
-        if (ch == 114) {
-            
+        if (ch == 114) {        //r é‡æ–°å¼€å§‹
+            system("cls");
+            DrawGameFrame();
             gamePlay();
         }
-        if (ch == 27)
+        if (ch == 27)           //esc å…³é—­
         {
             close();
         }
+        if (ch == 102) {        //f è‡ªåŠ¨åŠŸèƒ½
+            tetris->isauto = -tetris->isauto;
+            gotoXY(GameFrame_X + 2 * GameFrame_Width + 23, GameFrame_Y + 16);
+            
+            if (tetris->isauto == 1) {
+                color(12);
+                printf("f: åŠè‡ªåŠ¨");
+                color(15);
+            }
+            else {
+                color(14);
+                printf("f: åŠè‡ªåŠ¨");
+            }
+            
+        }
+        if (ch == 103) {        //g è¾…åŠ©åŠŸèƒ½
+            tetris->isguide = -tetris->isguide;
+            gotoXY(GameFrame_X + 2 * GameFrame_Width + 23, GameFrame_Y + 18);
+            
+
+            if (tetris->isguide == 1) {
+                color(12);
+                printf("g: æç¤º");
+                color(15);
+            }
+            else {
+                color(14);
+                printf("g: æç¤º");
+            }
+        }
+        if (ch == 110) {           //n æ¢ä¸‹ä¸€ä¸ª
+            nextshape = (rand() % 5);
+            for (j = 0; j < BLOCK_HEIGHT; j++) {        //æ‰“å°ä¸‹ä¸€ä¸ªtetris
+
+                for (i = 0; i < BLOCK_WIDTH; i++) {
+                    //x - 4 + 2 * i, y - 2 + j
+                    gotoXY(GameFrame_X + 2 * GameFrame_Width + 6 - 4 + 2 * i, GameFrame_Y + 10 - 2 + j);
+
+                    if (block[4 * nextshape][j][i])
+                        printf("â– ");
+                    else
+                        printf("  ");
+                }
+
+            }
+        }
+
         
         if (ifMove(tetris) == 0) {
-            tetris->flag = false;
+            
+            tetris->shape_dir = shape_index;
             tetris->x = temp;
         }
         else {            
         }
     }
     else {
-        tetris->flag = false;
+        
     }
     return tetris;
 }
@@ -228,24 +343,36 @@ int ifMove(Tetris* tetris)
 void Del_FullLine(Tetris* tetris)
 {
     int sor;
-    int k, del_rows = 0;                            //·Ö±ğÓÃÓÚ¼ÇÂ¼Ä³ĞĞ·½¿éµÄ¸öÊıºÍÉ¾³ı·½¿éµÄĞĞÊıµÄ±äÁ¿
+    int k, del_rows = 0;                            //åˆ†åˆ«ç”¨äºè®°å½•æŸè¡Œæ–¹å—çš„ä¸ªæ•°å’Œåˆ é™¤æ–¹å—çš„è¡Œæ•°çš„å˜é‡
     for (j = GameFrame_Y + GameFrame_Height - 1; j >= GameFrame_Y + 1; j--) {
         k = 0;
         for (i = GameFrame_X + 2; i < GameFrame_X + 2 * GameFrame_Width - 2; i += 2) {
-            if (map[i][j] == 1)                     //Êú×ø±êÒÀ´Î´ÓÏÂÍùÉÏ£¬ºá×ø±êÒÀ´ÎÓÉ×óÖÁÓÒÅĞ¶ÏÊÇ·ñÂúĞĞ
+            if (map[i][j] == 1)                     //ç«–åæ ‡ä¾æ¬¡ä»ä¸‹å¾€ä¸Šï¼Œæ¨ªåæ ‡ä¾æ¬¡ç”±å·¦è‡³å³åˆ¤æ–­æ˜¯å¦æ»¡è¡Œ
             {
-                k++;                                //¼ÇÂ¼´ËĞĞ·½¿éµÄ¸öÊı
-                if (k == GameFrame_Width - 2)       //Èç¹ûÂúĞĞ
+                k++;                                //è®°å½•æ­¤è¡Œæ–¹å—çš„ä¸ªæ•°
+                if (k == GameFrame_Width - 2)       //å¦‚æœæ»¡è¡Œ
                 {
-                    for (k = GameFrame_X + 2; k < GameFrame_X + 2 * GameFrame_Width - 2; k += 2)//É¾³ıÂúĞĞµÄ·½¿é
+                    for (k = GameFrame_X + 2; k < GameFrame_X + 2 * GameFrame_Width - 2; k += 2)//åˆ é™¤æ»¡è¡Œçš„æ–¹å—
                     {
                         map[k][j] = 0;
                         gotoXY(k, j);
                         printf("  ");
                         //      					Sleep(1);
                     }
-                    for (k = j - 1; k > GameFrame_Y; k--) //Èç¹ûÉ¾³ıĞĞÒÔÉÏµÄÎ»ÖÃÓĞ·½¿é£¬ÔòÏÈÇå³ı£¬ÔÙ½«·½¿éÏÂÒÆÒ»¸öÎ»ÖÃ
+                    for (k = j - 1; k > GameFrame_Y; k--) //å¦‚æœåˆ é™¤è¡Œä»¥ä¸Šçš„ä½ç½®æœ‰æ–¹å—ï¼Œåˆ™å…ˆæ¸…é™¤ï¼Œå†å°†æ–¹å—ä¸‹ç§»ä¸€ä¸ªä½ç½®
                     {
+                        int n = (rand() % 5) ;
+                        switch (n)
+                        {
+                        case 0:color(14); break;
+                        case 1:color(9); break;
+                        case 2:color(7); break;
+                        case 3:color(11); break;
+                        case 4:color(13); break;
+                        default:
+                            break;
+                        }
+                        
                         for (i = GameFrame_X + 2; i < GameFrame_X + 2 * GameFrame_Width - 2; i += 2) {
                             if (map[i][k] == 1) {
                                 map[i][k] = 0;
@@ -253,17 +380,17 @@ void Del_FullLine(Tetris* tetris)
                                 printf("  ");
                                 map[i][k + 1] = 1;
                                 gotoXY(i, k + 1);
-                                printf("¡ö");
+                                printf("â– ");
                             }
                         }
                     }
-                    j++;   //·½¿éÏÂÒÆºó£¬ÖØĞÂÅĞ¶ÏÉ¾³ıĞĞÊÇ·ñÂúĞĞ
-                    del_rows++; //¼ÇÂ¼É¾³ı·½¿éµÄĞĞÊı
+                    j++;   //æ–¹å—ä¸‹ç§»åï¼Œé‡æ–°åˆ¤æ–­åˆ é™¤è¡Œæ˜¯å¦æ»¡è¡Œ
+                    del_rows++; //è®°å½•åˆ é™¤æ–¹å—çš„è¡Œæ•°
                 }
             }
         }
     }
-    score += 100 * del_rows; //Ã¿É¾³ıÒ»ĞĞ£¬µÃ100·Ö
+    score += 100 * del_rows; //æ¯åˆ é™¤ä¸€è¡Œï¼Œå¾—100åˆ†
     
 }
 
@@ -287,21 +414,22 @@ void Rotate(Tetris* tetris)
 {
     srand(time(NULL));
     if (nextshape == -1) {
-        tetris->shape = (rand() % 5);
+        //tetris->shape = (rand() % 5);
+        tetris->shape = 0;
     }
     else {
         tetris->shape = nextshape;
     }
     nextshape = (rand() % 5);
 
-    for (j = 0; j < BLOCK_HEIGHT; j++) {        //´òÓ¡ÏÂÒ»¸ötetris
+    for (j = 0; j < BLOCK_HEIGHT; j++) {        //æ‰“å°ä¸‹ä¸€ä¸ªtetris
 
         for (i = 0; i < BLOCK_WIDTH; i++) {
             //x - 4 + 2 * i, y - 2 + j
             gotoXY(GameFrame_X+2*GameFrame_Width+6-4+2*i,GameFrame_Y+10-2+j);
 
             if (block[4 * nextshape][j][i])
-                printf("¡ö");
+                printf("â– ");
             else
                 printf("  ");
         }
@@ -334,37 +462,186 @@ int getScore()
 void printScore()
 {
     gotoXY(GameFrame_X + 2 * GameFrame_Width + 6 - 3 , GameFrame_Y +4);
-    printf("Score: %d ·Ö", score);
+    printf("Score: %d åˆ†", score);
 }
 void intoFile()
 {
-    char buf[100];
+    char buf[100] = {'\0'};
     system("cls");
     FILE* f;
-    errno_t err = fopen_s(&f, ".\\Debug\\top.txt", "a");
-    strcpy_s(buf, "\n");
-    fgets(buf, 100, f);
+    errno_t err = fopen_s(&f, ".\\Debug\\top.txt", "a+");
+    if (err != 0) {
+        printf("open failed");
+        close();
+    }
     getchar();
-    printf("ÊäÈëÃû×Ö£º");
+   
+    printf("è¾“å…¥åå­—ï¼š");
 
-    scanf("%c", buf);
-    fgets(buf, 100, f);
+    scanf("%s", buf);
+    fprintf(f, "%s", buf);          //name
 
-    strcpy_s(buf, "    ");
-    fgets(buf, 100, f);
-    
-    _itoa(score, buf, 10);
-    
-    fgets(buf, 100, f);
+    fputc('\n', f);
 
+    _itoa(score, buf, 10);          //score  
+    fprintf(f, "%s", buf);
+
+    fputc('\n', f);
     fclose(f);
 
 
 
-    printf("°´ÈÎÒâ¼üÍË³ö");
+    printf("æŒ‰ä»»æ„é”®");
     hideCursor();
     _getch();
 
 
 }
+
+void outFile()
+{
+    FILE* f;
+    errno_t err = fopen_s(&f, ".\\Debug\\top.txt", "a+");
+    if (err != 0) {
+        printf("open failed");
+        close();
+    }
+
+    char name[10][50];  
+    int score[10];
+    char c[1000];
+    int flag=1;
+    int max=0;
+    list_number = 0;
+    while (!feof(f)) {
+        fscanf(f, "%s", name[list_number]);
+        fscanf(f, "%d", &score[list_number]);
+        list_number++;
+    }
+    list_number--;
+    for (int i = 0; i < list_number; i++) {
+        if (score[i] > score[max])max = i;
+        printf("%s:\n            %10d\n", name[i], score[i]);
+    }
+    printf("\n\n\n\nå…¨åœºæœ€é«˜  %s:  %10d\n", name[max], score[max]);
+    
+    fclose(f);
+   
+    
+    
+}
+
+void calGuideTetris(Tetris *guideTetris)
+{ 
+    
+
+    while (1) {
+        guideTetris->y++;
+        if (ifMove(guideTetris) == 0) {
+            break;
+        }
+    }
+    guideTetris->y--;
+}
+
+bool autoFall(Tetris* tetris)
+{
+    int leftX = 100;
+    int leftY = 0;
+    int rightX = 0;
+    int rightY = 0;
+    int x = tetris->x;
+    int y = tetris->y;
+    int shape = tetris->shape;
+    int d = tetris->shape_dir;
+    for (j = 0; j < BLOCK_HEIGHT; j++) {
+        for (i = 0; i < BLOCK_WIDTH; i++) {
+            if (block[4 * shape + d][j][i]) {
+                if (leftX > i)leftX = i;
+                if (rightX < i)rightX = i;
+                if (leftX==i && leftY < j)leftY = j;
+                if (rightX==i &&rightY < j)rightY = j;
+            }
+        }
+    }
+    //gotoXY(x - 4 + 2 * i, y - 2 + j);
+    leftX = x - 4 + 2 * leftX;
+    leftY = y - 2 + leftY;
+
+    rightX = x - 4 + 2 * rightX;
+    rightY = y - 2 + rightY;
+    if (shape == 3 && d == 0 && map[x][y+1]) {
+        if (  map[leftX][leftY + 1]  && map[rightX][rightY + 1])return true;       
+    }
+    else if (shape == 1 && d == 1) {
+        
+    }
+    else if (shape == 1 && d == 3) {
+
+    }
+    else {
+        if(map[leftX - 2][leftY] && map[leftX][leftY + 1] && map[rightX + 2][rightY] && map[rightX][rightY + 1])return true; }
+    
+    //map[38][22]
+
+
+
+    int n = tetris->shape;  
+    switch ( 4*n + d ) {
+    case 0: // | å½¢æ–¹å—    
+        
+        break;
+    case 1:
+        if (map[x-2][y + 1] && map[x+2][y + 1] && map[x][y+1] )return true;
+    case 4:// L å½¢æ–¹å—
+        
+      
+        break;
+    case 5:
+        if (map[x - 2][y + 1] && map[x + 2][y + 1] && map[x][y + 1])return true;
+        break;
+    case 6:
+        if (map[x - 2][y ] && map[x -2][y + 1] &&map[x][y+2])return true;
+        break;
+    case 7:
+        if (map[x][y+1 ] && map[x +2][y+1 ] && map[x-2][y + 2])return true;
+        break;
+    case 8:// ç”° å½¢æ–¹å—
+        
+        if (map[x - 2][y + 1] == 2 && map[x][y + 1] == 2)return true;
+        break;
+    case 12:   // T å½¢æ–¹å—                 //
+       
+        break;
+    case 13:
+        if (map[x][y + 1] && map[x + 2][y + 2] && map[x + 4][y + 1])return true;
+        
+        break;
+    case 14:
+       
+        if (map[x - 2][y + 1] && map[x + 2][y + 1] && map[x][y + 1])return true;
+        break;
+    case 15:
+        if (map[x][y+1] && map[x -2][y + 2] && map[x - 4][y + 1])return true;
+        break;
+    case 16:// Z å½¢æ–¹å—	
+        
+        if (map[x-2][y]&&map[x+2][y+1] && map[x][y + 1])return true;
+        break;
+    case 17:
+        if (map[x][y+1] && map[x -2][y + 2] && map[x - 4][y + 1])return true;
+        break;
+    case 18:
+        if (map[x - 2][y+1] && map[x + 2][y ] && map[x][y + 1])return true;
+        break;
+    case 19:
+        if (map[x-2][y + 1] && map[x][y + 2] && map[x+2][y + 1])return true;
+        break;
+    default:
+        return false;
+    }
+    return false;
+}
+
+
 
