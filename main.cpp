@@ -4,25 +4,23 @@
 #include "interface.h"
 #include "mywindows.h"
 
-#include <conio.h>
-
-#include <stdio.h>
 
 
 
 /********************************
-ע��sdfsadfs
+运行环境：Visual Studio 2019
 
+分成三个部分
+
+	方块功能
 	
+	界面  
 
-
+	windows
 ********************************/
 
 
 int main() {
-	//music();
-	
-	welcome();	
-	//gamePlay();
+	welcome();
 }
 
